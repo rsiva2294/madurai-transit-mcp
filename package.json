@@ -1,6 +1,6 @@
 {
   "name": "madurai-transit-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Model Context Protocol (MCP) Server for Madurai CityBus transit routing, official stage fares, stop search, and platform bay departures.",
   "type": "module",
   "main": "dist/index.js",
