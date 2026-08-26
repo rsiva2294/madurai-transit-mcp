@@ -1,0 +1,24 @@
+# Smithery configuration for Madurai CityBus Transit MCP Server
+# https://smithery.ai/docs/config
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      apiUrl:
+        type: string
+        description: "Optional custom Transit API URL (defaults to https://api.maduraione.in)"
+        default: "https://api.maduraione.in"
+      apiKey:
+        type: string
+        description: "Optional Transit API Key for higher rate limit quota (defaults to public keyless access)"
+  commandFunction: |-
+    (config) => ({
+      command: 'npx',
+      args: ['-y', 'madurai-transit-mcp'],
+      env: {
+        ...(config?.apiUrl ? { MADURAI_TRANSIT_API_URL: config.apiUrl } : {}),
+        ...(config?.apiKey ? { MADURAI_TRANSIT_API_KEY: config.apiKey } : {})
+      }
+    })

@@ -1,6 +1,8 @@
 # 🚌 Madurai CityBus Model Context Protocol (MCP) Server
 
 [![npm version](https://img.shields.io/npm/v/madurai-transit-mcp?color=blue)](https://www.npmjs.com/package/madurai-transit-mcp)
+[![smithery badge](https://smithery.ai/badge/rsiva2294/madurai-transit)](https://smithery.ai/servers/rsiva2294/madurai-transit)
+[![rsiva2294/madurai-transit-mcp MCP server](https://glama.ai/mcp/servers/rsiva2294/madurai-transit-mcp/badges/score.svg)](https://glama.ai/mcp/servers/rsiva2294/madurai-transit-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Powered by MaduraiOne](https://img.shields.io/badge/Powered%20By-MaduraiOne-0284c7)](https://maduraione.in)
 
