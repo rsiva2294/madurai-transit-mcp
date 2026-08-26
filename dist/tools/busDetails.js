@@ -1,19 +1,25 @@
 export const busDetailsToolDefinition = {
     name: "get_bus_details",
-    description: `Lookup complete route details and full ordered stop sequence for a specific Madurai bus number (e.g. '44', '77', '11A', '5'). Returns total stops, departure platform bay at Periyar Bus Stand, spoke category, and full timeline.`,
+    description: `Lookup route details, platform bay at Periyar Bus Stand, spoke category, and stop sequence for a specific Madurai bus number (e.g. '44', '77', '11A', '5'). By default returns key transit milestones for token efficiency; set verbose=true for the complete numbered stop list.`,
     inputSchema: {
         type: "object",
         properties: {
             bus_number: {
                 type: "string",
                 description: "Bus number to inspect (e.g. '44', '77', '11A', '5', '48P')."
+            },
+            verbose: {
+                type: "boolean",
+                description: "Set to true to return the full numbered list of all intermediate stops. Default is false (returns key milestones).",
+                default: false
             }
         },
         required: ["bus_number"]
     }
 };
 export async function handleBusDetails(args, client) {
-    const result = await client.getBusDetails(args.bus_number);
+    const isVerbose = Boolean(args.verbose);
+    const result = await client.getBusDetails(args.bus_number, isVerbose);
     if (!result.data || result.data.routes.length === 0) {
         return {
             content: [
@@ -35,11 +41,18 @@ export async function handleBusDetails(args, client) {
             text += `• **Periyar Bus Stand Departure**: ${route.pbs_platform}\n`;
         }
         text += `• **Total Stops**: ${route.total_stops}\n`;
-        text += `• **Stop Sequence**:\n`;
-        // Format stop list in 3-column rows or readable sequence
-        const stopList = route.stops.map((s, i) => `${i + 1}. ${s}`).join('\n');
-        text += `\`\`\`\n${stopList}\n\`\`\`\n`;
-        text += `• 🔗 **View Route on Map**: ${route.canonical_url}\n\n`;
+        if (isVerbose) {
+            const stopList = route.stops.map((s, i) => `${i + 1}. ${s}`).join('\n');
+            text += `• **Complete Stop Timeline (${route.total_stops} stops)**:\n`;
+            text += `\`\`\`\n${stopList}\n\`\`\`\n`;
+        }
+        else {
+            text += `• **Key Route Milestones**: ${route.stops.join(' ➔ ')}\n`;
+            if (route.total_stops > route.stops.length) {
+                text += `  *(Use \`verbose: true\` to expand all ${route.total_stops} stops)*\n`;
+            }
+        }
+        text += `• 🔗 **View Interactive Map**: ${route.canonical_url}\n\n`;
     });
     if (metadata) {
         text += `---\n`;

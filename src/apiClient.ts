@@ -1,6 +1,6 @@
 import { ApiResponseWrapper, SearchRoutesResult, BusDetailsResult, StopSearchResult, FareCalculationResult } from './types.js';
 
-const DEFAULT_API_BASE = process.env.MADURAI_TRANSIT_API_URL || 'https://madurai-transit-api.rsiva2294.workers.dev';
+const DEFAULT_API_BASE = process.env.MADURAI_TRANSIT_API_URL || 'https://api.maduraione.in';
 
 export class TransitApiClient {
   private apiBase: string;
@@ -11,11 +11,12 @@ export class TransitApiClient {
     this.timeoutMs = timeoutMs;
   }
 
-  private async fetchJson<T>(endpoint: string, params: Record<string, string | number | undefined> = {}): Promise<ApiResponseWrapper<T>> {
+  private async fetchJson<T>(endpoint: string, params: Record<string, string | number | boolean | undefined> = {}): Promise<ApiResponseWrapper<T>> {
+    // Multi-tier fallback cascade: Branded domain -> Cloudflare Edge fallback -> Local Dev
     const urlsToTry = [
       this.apiBase,
-      'https://madurai-transit-api.rsiva2294.workers.dev',
       'https://api.maduraione.in',
+      'https://madurai-transit-api.rsiva2294.workers.dev',
       'http://localhost:3001/api/v1'
     ].filter((v, i, a) => a.indexOf(v) === i); // deduplicate
 
@@ -37,7 +38,7 @@ export class TransitApiClient {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
-            'User-Agent': 'MaduraiTransitMCP/1.0.0'
+            'User-Agent': 'MaduraiTransitMCP/1.0.4'
           },
           signal: controller.signal
         });
@@ -55,23 +56,23 @@ export class TransitApiClient {
       } catch (error: any) {
         clearTimeout(timer);
         lastError = error;
-        // If client error or specific API error (not connection failure), rethrow immediately
-        if (error.message && !error.message.includes('fetch failed') && !error.message.includes('ECONNREFUSED')) {
+        // If client error with specific API error message (not connection failure), rethrow immediately
+        if (error.message && !error.message.includes('fetch failed') && !error.message.includes('ECONNREFUSED') && !error.name?.includes('AbortError')) {
           throw error;
         }
       }
     }
 
-    throw lastError || new Error(`Failed to connect to Madurai Transit API.`);
+    throw lastError || new Error(`Failed to connect to Madurai Transit API across edge endpoints.`);
   }
 
-  public async searchRoutes(from: string, to: string, maxTransfers: number = 1): Promise<ApiResponseWrapper<SearchRoutesResult>> {
-    return this.fetchJson<SearchRoutesResult>('/search', { from, to, maxTransfers });
+  public async searchRoutes(from: string, to: string, maxTransfers: number = 1, verbose: boolean = false): Promise<ApiResponseWrapper<SearchRoutesResult>> {
+    return this.fetchJson<SearchRoutesResult>('/search', { from, to, maxTransfers, verbose });
   }
 
-  public async getBusDetails(busNumber: string): Promise<ApiResponseWrapper<BusDetailsResult>> {
+  public async getBusDetails(busNumber: string, verbose: boolean = false): Promise<ApiResponseWrapper<BusDetailsResult>> {
     const cleanNumber = encodeURIComponent(busNumber.trim());
-    return this.fetchJson<BusDetailsResult>(`/bus/${cleanNumber}`);
+    return this.fetchJson<BusDetailsResult>(`/bus/${cleanNumber}`, { verbose });
   }
 
   public async searchStops(query: string): Promise<ApiResponseWrapper<{ query: string; matches_count: number; stops: StopSearchResult[] }>> {

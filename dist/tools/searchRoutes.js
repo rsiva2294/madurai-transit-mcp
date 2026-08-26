@@ -1,12 +1,6 @@
 export const searchRoutesToolDefinition = {
     name: "search_bus_routes",
-    description: `Search bus routes between two stops in Madurai. Returns direct buses and 1-transfer options with stop counts, PBS platform bays, official TNSTC stage fares, and canonical visual map links.
-  
-USAGE GUIDANCE FOR AI:
-- Clearly state the bus numbers and whether it is a DIRECT or 1-TRANSFER route.
-- Mention the official Ordinary stage fare and the departure platform bay (e.g. Platform I/II/III/IV at Periyar Bus Stand) when available.
-- Always inform the user that route sequences and stage fares are official/mapped, but intermediate roadside coordinates and transfer points are heuristic topological approximations based on the 7-Spoke Madurai model.
-- Always include the canonical map link (https://maduraione.in/route/...) for live visual route inspection.`,
+    description: `Search bus routes between two stops in Madurai. Returns direct buses and 1-transfer options with stop counts, PBS platform bays, official TNSTC stage fares, and canonical visual map links. By default returns key milestones for token efficiency; set verbose=true for complete stop sequences.`,
     inputSchema: {
         type: "object",
         properties: {
@@ -22,13 +16,19 @@ USAGE GUIDANCE FOR AI:
                 type: "number",
                 description: "Maximum transfers allowed: 0 for direct only, 1 for up to 1-transfer. Default is 1.",
                 default: 1
+            },
+            verbose: {
+                type: "boolean",
+                description: "Set to true to return full intermediate stop lists for every leg. Default is false (key milestones).",
+                default: false
             }
         },
         required: ["from", "to"]
     }
 };
 export async function handleSearchRoutes(args, client) {
-    const result = await client.searchRoutes(args.from, args.to, args.max_transfers ?? 1);
+    const isVerbose = Boolean(args.verbose);
+    const result = await client.searchRoutes(args.from, args.to, args.max_transfers ?? 1, isVerbose);
     if (!result.data || result.data.routes.length === 0) {
         return {
             content: [
@@ -54,7 +54,7 @@ export async function handleSearchRoutes(args, client) {
             if (leg.fare) {
                 text += `  - **Official Fare**: Ordinary ₹${leg.fare.ordinary}${leg.fare.express ? ` | Express ₹${leg.fare.express}` : ''} (${leg.fare.source})\n`;
             }
-            text += `  - **Stops (${leg.stop_count})**: ${leg.stops.slice(0, 5).join(' ➔ ')}${leg.stops.length > 5 ? ' ➔ ... ➔ ' + leg.stops[leg.stops.length - 1] : ''}\n`;
+            text += `  - **Stops (${leg.stop_count})**: ${leg.stops.join(' ➔ ')}\n`;
         });
         if (route.transfer_stop) {
             text += `• **Transfer Interchange**: ${route.transfer_stop}\n`;

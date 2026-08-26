@@ -9,12 +9,18 @@ export declare const busDetailsToolDefinition: {
                 type: string;
                 description: string;
             };
+            verbose: {
+                type: string;
+                description: string;
+                default: boolean;
+            };
         };
         required: string[];
     };
 };
 export declare function handleBusDetails(args: {
     bus_number: string;
+    verbose?: boolean;
 }, client: TransitApiClient): Promise<{
     content: {
         type: string;

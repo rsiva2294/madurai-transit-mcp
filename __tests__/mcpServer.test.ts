@@ -128,9 +128,9 @@ describe('Madurai Transit MCP Server', () => {
     expect(text).toContain('headway frequency');
   });
 
-  it('handleBusDetails should format bus stop sequence and platform bay', async () => {
+  it('handleBusDetails should format bus stop sequence and platform bay with milestone support', async () => {
     const result = await handleBusDetails(
-      { bus_number: '44' },
+      { bus_number: '44', verbose: false },
       mockApiClient
     );
 
@@ -138,7 +138,7 @@ describe('Madurai Transit MCP Server', () => {
     expect(text).toContain('Bus 44');
     expect(text).toContain('NORTH_SPOKE');
     expect(text).toContain('Platform I');
-    expect(text).toContain('SIMMAKKAL');
+    expect(text).toContain('Key Route Milestones');
     expect(text).toContain('https://maduraione.in/route/44-pbs-alagarkovil');
   });
 

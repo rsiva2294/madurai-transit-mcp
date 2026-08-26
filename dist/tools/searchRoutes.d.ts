@@ -18,6 +18,11 @@ export declare const searchRoutesToolDefinition: {
                 description: string;
                 default: number;
             };
+            verbose: {
+                type: string;
+                description: string;
+                default: boolean;
+            };
         };
         required: string[];
     };
@@ -26,6 +31,7 @@ export declare function handleSearchRoutes(args: {
     from: string;
     to: string;
     max_transfers?: number;
+    verbose?: boolean;
 }, client: TransitApiClient): Promise<{
     content: {
         type: string;

@@ -40,7 +40,7 @@ export function createMcpServer(apiClient: TransitApiClient = defaultApiClient):
     try {
       switch (name) {
         case "search_bus_routes": {
-          const typedArgs = args as { from: string; to: string; max_transfers?: number };
+          const typedArgs = args as { from: string; to: string; max_transfers?: number; verbose?: boolean };
           if (!typedArgs.from || !typedArgs.to) {
             throw new Error("Missing required arguments 'from' and 'to'.");
           }
@@ -48,7 +48,7 @@ export function createMcpServer(apiClient: TransitApiClient = defaultApiClient):
         }
 
         case "get_bus_details": {
-          const typedArgs = args as { bus_number: string };
+          const typedArgs = args as { bus_number: string; verbose?: boolean };
           if (!typedArgs.bus_number) {
             throw new Error("Missing required argument 'bus_number'.");
           }

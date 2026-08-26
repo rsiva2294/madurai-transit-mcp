@@ -4,8 +4,8 @@ export declare class TransitApiClient {
     private timeoutMs;
     constructor(apiBase?: string, timeoutMs?: number);
     private fetchJson;
-    searchRoutes(from: string, to: string, maxTransfers?: number): Promise<ApiResponseWrapper<SearchRoutesResult>>;
-    getBusDetails(busNumber: string): Promise<ApiResponseWrapper<BusDetailsResult>>;
+    searchRoutes(from: string, to: string, maxTransfers?: number, verbose?: boolean): Promise<ApiResponseWrapper<SearchRoutesResult>>;
+    getBusDetails(busNumber: string, verbose?: boolean): Promise<ApiResponseWrapper<BusDetailsResult>>;
     searchStops(query: string): Promise<ApiResponseWrapper<{
         query: string;
         matches_count: number;
