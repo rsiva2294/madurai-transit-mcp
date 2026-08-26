@@ -1,0 +1,43 @@
+{
+  "name": "madurai-transit-mcp",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) Server for Madurai CityBus transit routing, official stage fares, stop search, and platform bay departures.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "madurai-transit-mcp": "./bin/cli.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "cursor",
+    "madurai",
+    "transit",
+    "bus",
+    "tnstc",
+    "routing",
+    "india"
+  ],
+  "author": "MaduraiOne (https://maduraione.in)",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "typescript": "~5.8.2",
+    "vitest": "^4.1.10"
+  }
+}
