@@ -124,8 +124,8 @@ Public transit in Tier-2 Indian cities operates differently from Western transit
 ## 🌐 Powered By
 
 - **Web App & Live Bus Telemetry**: [https://maduraione.in](https://maduraione.in)
-- **Android App**: Available on Google Play Store
-- **Main Repository**: [https://github.com/rsiva2294/madurai-bus-route-finder](https://github.com/rsiva2294/madurai-bus-route-finder)
+- **Android App (Google Play)**: [Madurai CityBus on Google Play](https://play.google.com/store/apps/details?id=in.maduraione.citybus)
+- **GitHub Repository**: [https://github.com/rsiva2294/madurai-transit-mcp](https://github.com/rsiva2294/madurai-transit-mcp)
 
 ---
 
